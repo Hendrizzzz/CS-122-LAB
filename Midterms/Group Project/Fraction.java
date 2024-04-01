@@ -84,7 +84,6 @@ public class Fraction {
 
 
 
-
     /**
      * Converts the fraction to its decimal form.
      * Returns the decimal value with three decimal places for better output view, though less accurate.
