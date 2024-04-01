@@ -37,7 +37,7 @@ public class MixedFraction extends Fraction {
      * @param numerator   The numerator of the fraction part.
      * @param denominator The denominator of the fraction part.
      */
-    public MixedFraction(int whole, int numerator, int denominator){
+    public MixedFraction(int whole, int numerator, int denominator) throws ArithmeticException{
         super(numerator, denominator);
         if (getNumerator() < 0 && whole != 0) {
             this.whole = -whole;
@@ -113,6 +113,7 @@ public class MixedFraction extends Fraction {
 
 
 
+
     /**
      * Creates and returns a new MixedFraction object equivalent to the current MixedFraction.
      *
@@ -157,7 +158,7 @@ public class MixedFraction extends Fraction {
     }
 
 
-    /**
+     /**
      * Divides this mixed fraction by the specified mixed fraction.
      *
      * @param other The mixed fraction to divide by.
