@@ -115,16 +115,6 @@ public class MixedFraction extends Fraction {
 
 
     /**
-     * Creates and returns a new MixedFraction object equivalent to the current MixedFraction.
-     *
-     * @return A new MixedFraction object equivalent to the current MixedFraction.
-     */
-    private MixedFraction getMixedFraction(){
-        return new MixedFraction(whole, getFractionPart());
-    }
-
-
-    /**
      * Adds the specified mixed fraction to this mixed fraction.
      *
      * @param other The mixed fraction to be added.
@@ -177,8 +167,8 @@ public class MixedFraction extends Fraction {
      * @return The result of the specified operation between this mixed fraction and the specified mixed fraction.
      */
     private MixedFraction performOperation(MixedFraction other, String operation){
-        Fraction thisFraction = toImproperFraction(getMixedFraction());
-        Fraction otherFraction = toImproperFraction(other.getMixedFraction());
+        Fraction thisFraction = getMixedFraction().toFraction();
+        Fraction otherFraction = other.getMixedFraction().toFraction();
         Fraction result = new Fraction();
         switch(operation){
             case "addition" -> result = thisFraction.add(otherFraction);
@@ -191,6 +181,17 @@ public class MixedFraction extends Fraction {
             resultMixedNumber.setNumerator(-resultMixedNumber.getNumerator());
         }
         return resultMixedNumber;
+    }
+
+
+
+    /**
+     * Creates and returns a new MixedFraction object equivalent to the current MixedFraction.
+     *
+     * @return A new MixedFraction object equivalent to the current MixedFraction.
+     */
+    private MixedFraction getMixedFraction(){
+        return new MixedFraction(whole, getFractionPart());
     }
 
 
@@ -212,22 +213,6 @@ public class MixedFraction extends Fraction {
     }
 
 
-    /**
-     * Converts the specified mixed fraction to an improper fraction.
-     *
-     * @param mixedFraction The mixed fraction to convert.
-     * @return The equivalent improper fraction.
-     */
-    private static Fraction toImproperFraction(MixedFraction mixedFraction){
-        int numerator;
-        if (mixedFraction.getWhole() < 0 && mixedFraction.getNumerator() > 0 || mixedFraction.getWhole() > 0 && mixedFraction.getNumerator() < 0){
-            numerator = -(Math.abs(mixedFraction.getWhole()) * mixedFraction.getDenominator() + Math.abs(mixedFraction.getNumerator()));
-        } else {
-            numerator = mixedFraction.getWhole() * mixedFraction.getDenominator() + mixedFraction.getNumerator();
-        }
-        return new Fraction(numerator, mixedFraction.getDenominator());
-    }
-
 
     /**
      * Converts the specified improper fraction to a mixed fraction.
@@ -240,6 +225,9 @@ public class MixedFraction extends Fraction {
             return new MixedFraction(improperFraction);
         }
         int wholeNumber = improperFraction.getNumerator()/improperFraction.getDenominator();
+        if (wholeNumber == 0) {
+            return new MixedFraction(improperFraction);
+        }
         int numerator = Math.abs(improperFraction.getNumerator()) % improperFraction.getDenominator();
         MixedFraction result = new MixedFraction(wholeNumber, numerator, improperFraction.getDenominator());
         if (result.getWhole() < 0 && result.getNumerator() < 0){
@@ -247,6 +235,8 @@ public class MixedFraction extends Fraction {
         }
         return result;
     }
+
+
 
     @Override
     public String toString(){
