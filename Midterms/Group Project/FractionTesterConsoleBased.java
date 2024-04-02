@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 
-public class FractionTester {
+public class FractionTesterConsoleBased {
     private final static BufferedReader READER = new BufferedReader(new InputStreamReader(System.in));
 
     // Define ANSI escape codes for text formatting in the terminal
@@ -23,9 +23,9 @@ public class FractionTester {
     private static final String CHOICE_NOT_FOUND = RED + BOLD + "Choice not found. Try again. " + RESET + "\n-> ";
 
     public static void main(String[] args) {
-        FractionTester program;
+        FractionTesterConsoleBased program;
         try{
-            program = new FractionTester();
+            program = new FractionTesterConsoleBased();
             program.run();
         } catch(IOException e){
             System.out.println(IOEXCEPTION + e.getMessage());
