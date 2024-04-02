@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
  * A graphical user interface for a Mixed Fraction Calculator.
  * This class provides a GUI with functionalities to reduce fractions and perform arithmetic operations on fractions.
  */
-public class FractionTesterGUI extends JFrame {
+public class FractionTester extends JFrame {
     /*
      The structure the JFrame consists of 5 JPanels (horizontally down).
 
@@ -377,7 +377,7 @@ public class FractionTesterGUI extends JFrame {
      * @param args The command-line arguments (unused).
      */
     public static void main(String[] args) {
-        new FractionTesterGUI();
+        new FractionTester();
     }
 
 
