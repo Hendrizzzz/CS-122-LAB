@@ -471,6 +471,10 @@ public class FractionTesterGUI extends JFrame {
             int numeratorR = parseInteger(numerator.getText());
             int denominatorR = parseInteger(denominator.getText());
 
+            if (wholeR == Integer.MAX_VALUE || numeratorR == Integer.MAX_VALUE || denominatorR == Integer.MAX_VALUE){
+                return;
+            }
+
             // Create a MixedFraction object with the provided values
             MixedFraction fraction = createMixedFraction(wholeR, numeratorR, denominatorR);
             if (fraction == null){
@@ -480,6 +484,26 @@ public class FractionTesterGUI extends JFrame {
             // Simplify the fraction and display the result
             fraction.simplify();
             resultTF.setText(fraction.toString());
+        }
+
+
+
+        /**
+         * Parses a string input into an integer.
+         *
+         * @param input The string input to be parsed.
+         * @return The parsed integer value, or 0 if the input is empty or not a valid integer.
+         */
+        private int parseInteger(String input) {
+            if (input.isEmpty()) {
+                return 0;
+            }
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                errorMessage.setText("Some values are not valid. ");
+                return Integer.MAX_VALUE;
+            }
         }
 
 
@@ -503,23 +527,6 @@ public class FractionTesterGUI extends JFrame {
         }
 
 
-        /**
-         * Parses a string input into an integer.
-         *
-         * @param input The string input to be parsed.
-         * @return The parsed integer value, or 0 if the input is empty or not a valid integer.
-         */
-        private int parseInteger(String input) {
-            if (input.isEmpty()) {
-                return 0;
-            }
-            try {
-                return Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                errorMessage.setText("Some values are not valid. ");
-                return 0;
-            }
-        }
 
 
         /**
