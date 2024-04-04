@@ -107,7 +107,12 @@ public class MixedFraction extends Fraction {
      * @return The MixedFraction converted to a Fraction.
      */
     public Fraction toFraction(){
-        int numerator = whole * getDenominator() + getNumerator();
+        int numerator;
+        if (whole < 0) {
+            numerator = whole * getDenominator() - getNumerator();
+        } else {
+            numerator = whole * getDenominator() + getNumerator();
+        }
         return new Fraction(numerator, getDenominator());
     }
 
