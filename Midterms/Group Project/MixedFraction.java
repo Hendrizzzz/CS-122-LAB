@@ -1,613 +1,279 @@
 package edu.slu.prog2;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-
-
-/**
- * A graphical user interface for a Mixed Fraction Calculator.
- * This class provides a GUI with functionalities to reduce fractions and perform arithmetic operations on fractions.
- */
-public class FractionTester extends JFrame {
-
-    // Panels for different sections of the GUI in order (top to bottom)
-    private JPanel titlePanel; // contains the title with short description
-    private JPanel functionButtonPanel; // the buttons reduce and calculator
-    private JPanel calculatorPanel; // the panel that contains the textfields
-    private JPanel resultPanel; // contains the textfield where the result will be shown and a JLabel below it to show error message if there is any
-    private JPanel buttonsPanel; // the three buttons below. calculate, clear, exit.
-
-    // Text fields for input and display
-    private JTextField whole, numerator, denominator; //TextFields for the Reducing Fraction Part
-    private JTextField whole1, numerator1, denominator1; // Textfields for the first Fraction in performing arithmetic operations
-    private JTextField whole2, numerator2, denominator2; // Textfields for the second Fraction in performing arithmetic operations
-    private JTextField resultTF; // Textfield for the result
-
-    // Labels for error display
-    private JLabel errorMessage;
-
-    // Buttons for the 2nd panel
-    private JButton reduceButton;
-    private JButton calculatorButton;
-    // Buttons for the 5th Panel
-    private JButton clearButton;
-    private JButton calculateButton;
-    private JButton exitButton;
-
-    // Dropdown for selecting arithmetic operations
-    JComboBox<String> operation;
-
-    // Panels for managing card layout
-    JPanel cardPanel;
-    CardLayout cardLayout;
-
-    // to determine which panel is showing in the CardLayout, is it the reducePanel or calculatorPanel
-    static boolean isReducePanelShowing = false;
-
-    // Font used for text fields and labels
-    private static final Font font = new Font("Arial", Font.PLAIN, 20);
+public class MixedFraction extends Fraction {
+    private int whole;
 
 
     /**
-     * Constructs a FractionCalculatorGUI object.
-     * Initializes and sets up the GUI components.
+     * Constructs a MixedFraction object with default values (whole = 0, fraction part = 0/1).
      */
-    public FractionTester() {
-        setTitle("Bag-eoMalasanMartinPajaraSambotYu");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+    public MixedFraction(){
+        super();
+        whole = 0;
+    }
 
-        // Construct the 5 panels
-        setTitlePanel();
-        setFunctionPanel();
-        setCalculatorPanel();
-        setResultPanel();
-        setButtonsPanel();
 
-        // Set what layout will the contentPane will use
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    /**
+     * Constructs a MixedFraction object with the given whole number and fraction.
+     *
+     * @param whole    The whole number part of the mixed fraction.
+     * @param fraction The fraction part of the mixed fraction.
+     */
+    public MixedFraction(int whole, Fraction fraction){
+        super(fraction);
+        if (fraction.getNumerator() < 0 && whole != 0) {
+            this.whole = -whole;
+            setNumerator(-(fraction.getNumerator()));
+            return;
+        }
+        this.whole = whole;
+    }
 
-        // Add the main 5 panels
-        getContentPane().add(titlePanel);
-        getContentPane().add(functionButtonPanel);
-        getContentPane().add(calculatorPanel);
-        getContentPane().add(resultPanel);
-        getContentPane().add(buttonsPanel);
 
-        setVisible(true);
+    /**
+     * Constructs a MixedFraction object with the given whole number, numerator, and denominator.
+     *
+     * @param whole       The whole number part of the mixed fraction.
+     * @param numerator   The numerator of the fraction part.
+     * @param denominator The denominator of the fraction part.
+     */
+    public MixedFraction(int whole, int numerator, int denominator) throws ArithmeticException{
+        super(numerator, denominator);
+        if (getNumerator() < 0 && whole != 0) {
+            this.whole = -whole;
+            setNumerator(-getNumerator());
+            return;
+        }
+        this.whole = whole;
+    }
+
+
+    /**
+     * Constructs a MixedFraction object from a Fraction object.
+     *
+     * @param fraction The Fraction object representing the mixed fraction.
+     */
+    public MixedFraction(Fraction fraction){
+        super(fraction);
+        whole = 0;
+    }
+
+    public void setWholePart(int whole){
+        if (getNumerator() < 0 && whole != 0){
+            this.whole = -whole;
+            setNumerator(-getNumerator());
+            return;
+        }
+        this.whole = whole;
+    }
+
+
+    /**
+     * Sets the numerator and denominator of the fraction part of the MixedFraction.
+     *
+     * @param fraction The Fraction object representing the fraction part.
+     */
+    public void setFractionPart(Fraction fraction){
+        setNumerator(fraction.getNumerator());
+        setDenominator(fraction.getDenominator());
+    }
+
+
+    /**
+     * Retrieves the whole part of the MixedFraction.
+     *
+     * @return The whole part of the MixedFraction.
+     */
+    public int getWhole(){
+        return whole;
     }
 
 
 
     /**
-     * Sets up the title panel with the program description.
+     * Retrieves the fractional part of the MixedFraction as a Fraction object.
+     *
+     * @return The fractional part of the MixedFraction as a Fraction object.
      */
-    private void setTitlePanel() {
-        titlePanel = new JPanel();
-
-        // The title label and a little bit of modification
-        JLabel titleName = new JLabel("Mixed Fraction Calculator");
-        titleName.setVerticalAlignment(JLabel.TOP);
-        titleName.setHorizontalAlignment(JLabel.CENTER);
-        titleName.setFont(new Font("Arial", Font.BOLD, 30));
-
-        // Description Label and a little bit of modification
-        JLabel description = new JLabel("With this calculator, you can reduce and perform arithmetic operations on fractions, mixed fractions or both.");
-        description.setVerticalAlignment(JLabel.TOP);
-        description.setHorizontalAlignment(JLabel.CENTER);
-        description.setFont(new Font("Arial", Font.BOLD, 15));
-
-        // Make the first panel in a grid layout (vertical), then add the two Labels
-        titlePanel.setLayout(new GridLayout(2,1));
-        titlePanel.add(titleName);
-        titlePanel.add(description);
+    public Fraction getFractionPart(){
+        return new Fraction(getNumerator(), getDenominator());
     }
 
 
 
-
     /**
-     * Sets up the panel for function buttons (reduce and calculator).
+     * Converts the MixedFraction to an equivalent Fraction (Improper Fraction).
+     *
+     * @return The MixedFraction converted to a Fraction.
      */
-    private void setFunctionPanel() {
-        functionButtonPanel = new JPanel();
-        ButtonHandler buttonHandler = new ButtonHandler();
-
-        // Create two buttons
-        reduceButton = new JButton("Reduce");
-        calculatorButton = new JButton("Calculator");
-
-        // adds an actionListener to the two buttons
-        calculatorButton.addActionListener(buttonHandler);
-        reduceButton.addActionListener(buttonHandler);
-
-        // Adds both buttons to the second panel
-        functionButtonPanel.add(reduceButton);
-        functionButtonPanel.add(calculatorButton);
+    public Fraction toFraction(){
+        int numerator;
+        if (whole < 0) {
+            numerator = whole * getDenominator() - getNumerator();
+        } else {
+            numerator = whole * getDenominator() + getNumerator();
+        }
+        return new Fraction(numerator, getDenominator());
     }
 
 
 
 
     /**
-     * Sets up the calculator panel with input fields for fractions and arithmetic operations.
-     * This panel contains a CardLayout that has two panels, 'reducePanel' and 'calculatorP'.
+     * Adds the specified mixed fraction to this mixed fraction.
+     *
+     * @param other The mixed fraction to be added.
+     * @return The result of adding the specified mixed fraction to this mixed fraction.
      */
-    private void setCalculatorPanel() {
-        // Create card panel and set CardLayout
-        cardPanel = new JPanel();
-        cardLayout = new CardLayout();
-        cardPanel.setLayout(cardLayout);
-
-        // the first panel of the CardLayout
-        JPanel reducePanel = new JPanel();
-        setReduceContent(reducePanel);
-
-        // the second panel of the CardLayout
-        JPanel calculatorP = new JPanel();
-        setCalculateContent(calculatorP);
-
-        // Add panels to the CardLayout with unique names
-        cardPanel.add(calculatorP, "panel2");
-        cardPanel.add(reducePanel, "panel1");
-
-        // instantiates the calculatorPanel
-        calculatorPanel = new JPanel();
-
-        // add it to one of the main panels -> third panel
-        calculatorPanel.add(cardPanel);
-    }
-
-
-
-
-    /**
-     * Sets up the panel for reducing fractions.
-     * @param reducePanel The panel to set up for reducing fractions.
-     */
-    private void setReduceContent(JPanel reducePanel) {
-        whole = new JTextField();
-        whole.setHorizontalAlignment(0);
-        whole.setPreferredSize(new Dimension(70, 40));
-        whole.setFont(font);
-        numerator = new JTextField();
-        numerator.setHorizontalAlignment(0);
-        numerator.setPreferredSize(new Dimension(70, 40));
-        numerator.setFont(font);
-        JLabel lineLabel = new JLabel("━━━━━━━━━━━━");
-        denominator = new JTextField();
-        denominator.setPreferredSize(new Dimension(70, 40));
-        denominator.setHorizontalAlignment(0);
-        denominator.setFont(font);
-        JPanel fraction = new JPanel(new GridLayout(3,1));
-        fraction.add(numerator);
-        fraction.add(lineLabel);
-        fraction.add(denominator);
-
-        // Add it to the reducePanel, one the two panels in the CardLayout
-        reducePanel.add(whole);
-        reducePanel.add(fraction);
+    public MixedFraction add(MixedFraction other){
+        return performOperation(other, "addition");
     }
 
 
     /**
-     * Sets up the panel for displaying arithmetic operations and input fields for fractions.
-     * @param calculatorP The panel to set up for displaying arithmetic operations and input fields.
+     * Subtracts the specified mixed fraction from this mixed fraction.
+     *
+     * @param other The mixed fraction to be subtracted.
+     * @return The result of subtracting the specified mixed fraction from this mixed fraction.
      */
-    private void setCalculateContent(JPanel calculatorP) {
-        // First Fraction
-        JPanel fraction = new JPanel(new GridLayout(3,1));
-        setUpFirstFraction(fraction);
-
-        // the operations to be used + - x ÷
-        JComboBox<String> operation = getStringJComboBox();
-
-        // Second Fraction
-        JPanel fraction1 = new JPanel(new GridLayout(3,1));
-        setUpSecondFraction(fraction1);
-
-        calculatorP.setLayout(new FlowLayout());
-
-        // Add it to the one calculateP, one of the two panels in the CardLayout
-        calculatorP.add(whole1); // first fraction
-        calculatorP.add(fraction);
-        calculatorP.add(new JLabel("   ")); // for spacing
-        calculatorP.add(operation); // the vinculum
-        calculatorP.add(new JLabel("   ")); // for spacing
-        calculatorP.add(whole2); // second fraction
-        calculatorP.add(fraction1);
-    }
-
-
-    /**
-     * Sets up the input fields for the first fraction.
-     * @param fraction The panel to set up for the first fraction input fields.
-     */
-    private void setUpFirstFraction(JPanel fraction) {
-        whole1 = new JTextField();
-        whole1.setHorizontalAlignment(0);
-        whole1.setPreferredSize(new Dimension(70, 40));
-        whole1.setFont(font);
-
-        numerator1 = new JTextField();
-        numerator1.setHorizontalAlignment(0);
-        numerator1.setPreferredSize(new Dimension(70, 40));
-        numerator1.setFont(font);
-
-        JLabel lineLabel = new JLabel("━━━━━━━━━━━━");
-
-        denominator1 = new JTextField();
-        denominator1.setPreferredSize(new Dimension(70, 40));
-        denominator1.setHorizontalAlignment(0);
-        denominator1.setFont(font);
-
-        fraction.add(numerator1);
-        fraction.add(lineLabel);
-        fraction.add(denominator1);
-    }
-
-
-    /**
-     * Sets up the input fields for the second fraction.
-     * @param fraction1 The panel to set up for the second fraction input fields.
-     */
-    private void setUpSecondFraction(JPanel fraction1) {
-        whole2 = new JTextField();
-        whole2.setHorizontalAlignment(0);
-        whole2.setPreferredSize(new Dimension(70, 40));
-        whole2.setFont(font);
-
-        numerator2 = new JTextField();
-        numerator2.setHorizontalAlignment(0);
-        numerator2.setPreferredSize(new Dimension(70, 40));
-        numerator2.setFont(font);
-
-        JLabel lineLabel1 = new JLabel("━━━━━━━━━━━━");
-
-        denominator2 = new JTextField();
-        denominator2.setPreferredSize(new Dimension(70, 40));
-        denominator2.setHorizontalAlignment(0);
-        denominator2.setFont(font);
-
-        fraction1.add(numerator2);
-        fraction1.add(lineLabel1);
-        fraction1.add(denominator2);
+    public MixedFraction subtract(MixedFraction other){
+        return performOperation(other, "subtraction");
     }
 
 
 
     /**
-     * Creates and configures a JComboBox for selecting arithmetic operations.
-     * @return JComboBox<String> The configured JComboBox for selecting arithmetic operations.
+     * Multiplies this mixed fraction by the specified mixed fraction.
+     *
+     * @param other The mixed fraction to multiply by.
+     * @return The result of multiplying this mixed fraction by the specified mixed fraction.
      */
-    private JComboBox<String> getStringJComboBox() {
-        String[] items = {"+", "-", "x", "÷"};
-        operation = new JComboBox<>(items);
-
-        // Set custom renderer to center the text
-        operation.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                setHorizontalAlignment(SwingConstants.CENTER); // Center the text
-                return this;
-            }
-        });
-        operation.setPreferredSize(new Dimension(70, 40));
-        operation.setFont(font);
-        return operation;
+    public MixedFraction multiplyBy(MixedFraction other){
+        return performOperation(other, "multiplication");
     }
 
 
+     /**
+     * Divides this mixed fraction by the specified mixed fraction.
+     *
+     * @param other The mixed fraction to divide by.
+     * @return The result of dividing this mixed fraction by the specified mixed fraction.
+     */
+    public MixedFraction divideBy(MixedFraction other){
+        return performOperation(other, "division");
+    }
 
 
     /**
-     * Sets up the panel for displaying calculation results and error messages.
+     * Performs the specified arithmetic operation on this mixed fraction and the specified mixed fraction.
+     *
+     * @param other The mixed fraction to perform the operation with.
+     * @param operation The operation to perform (e.g., "addition", "subtraction", "multiplication", "division").
+     * @return The result of the specified operation between this mixed fraction and the specified mixed fraction.
      */
-    private void setResultPanel() {
-        resultPanel = new JPanel(new GridLayout(2,1));
-        JPanel resultContainer = new JPanel();
-        errorMessage = new JLabel("", SwingConstants.CENTER);
-        errorMessage.setForeground(Color.RED);
-        resultTF = new JTextField("");
-        resultTF.setHorizontalAlignment(JTextField.CENTER);
-        resultTF.setPreferredSize(new Dimension(250, 40));
-        resultTF.setFont(font);
-        resultTF.setEnabled(false);
-        resultTF.setDisabledTextColor(Color.BLACK);
-        JLabel resultText = new JLabel("Result: ");
-        resultContainer.add(resultText);
-        resultContainer.add(resultTF);
-
-        // Add it to one of the main 5 panels -> fourth panel
-        resultPanel.add(resultContainer);
-        resultPanel.add(errorMessage);
+    private MixedFraction performOperation(MixedFraction other, String operation){
+        Fraction thisFraction = getMixedFraction().toFraction();
+        Fraction otherFraction = other.getMixedFraction().toFraction();
+        Fraction result = new Fraction();
+        switch(operation){
+            case "addition" -> result = thisFraction.add(otherFraction);
+            case "subtraction" -> result = thisFraction.subtract(otherFraction);
+            case "multiplication" -> result = thisFraction.multiplyBy(otherFraction);
+            case "division" -> result = thisFraction.divideBy(otherFraction);
+        }
+        MixedFraction resultMixedNumber = toMixedFraction(result);
+        if (resultMixedNumber.getWhole() < 0 && resultMixedNumber.getNumerator() < 0){
+            resultMixedNumber.setNumerator(-resultMixedNumber.getNumerator());
+        }
+        return resultMixedNumber;
     }
 
 
 
     /**
-     * Sets up the panel for buttons such as clear, calculate, and exit.
+     * Creates and returns a new MixedFraction object equivalent to the current MixedFraction.
+     *
+     * @return A new MixedFraction object equivalent to the current MixedFraction.
      */
-    private void setButtonsPanel() {
-        buttonsPanel = new JPanel();
-        ButtonHandler buttonHandler = new ButtonHandler();
+    private MixedFraction getMixedFraction(){
+        return new MixedFraction(whole, getFractionPart());
+    }
 
-        clearButton = new JButton("clear");
-        calculateButton = new JButton("calculate");
-        exitButton = new JButton("exit");
 
-        clearButton.addActionListener(buttonHandler);
-        calculateButton.addActionListener(buttonHandler);
-        exitButton.addActionListener(buttonHandler);
-
-        // Add to one of the main 5 panels -> fifth panel
-        buttonsPanel.add(clearButton);
-        buttonsPanel.add(calculateButton);
-        buttonsPanel.add(exitButton);
+    /**
+     * Simplifies this mixed fraction, converting any improper fractions to mixed numbers if necessary.
+     * If the numerator's absolute value is less than the denominator, no simplification is performed.
+     */
+    public void simplify(){
+        reduce();
+        if (Math.abs(getNumerator()) < getDenominator()){
+            return;
+        }
+        if (whole < 0){
+            setWholePart(-(-whole + getNumerator()/getDenominator()));
+        } else {
+            setWholePart(whole + getNumerator()/getDenominator());
+        }
+        setNumerator(getNumerator() % getDenominator());
     }
 
 
 
-
-
     /**
-     * The main method to launch the Fraction Calculator GUI.
-     * @param args The command-line arguments (unused).
+     * Converts the specified improper fraction to a mixed fraction.
+     *
+     * @param improperFraction The improper fraction to convert.
+     * @return The equivalent mixed fraction.
      */
-    public static void main(String[] args) {
-        new FractionTester();
+    public static MixedFraction toMixedFraction(Fraction improperFraction){
+        if (improperFraction.getDenominator() == 0) {
+            return new MixedFraction(improperFraction);
+        }
+        int wholeNumber = improperFraction.getNumerator()/improperFraction.getDenominator();
+        if (wholeNumber == 0) {
+            return new MixedFraction(improperFraction);
+        }
+        int numerator = Math.abs(improperFraction.getNumerator()) % improperFraction.getDenominator();
+        MixedFraction result = new MixedFraction(wholeNumber, numerator, improperFraction.getDenominator());
+        if (result.getWhole() < 0 && result.getNumerator() < 0){
+            result.setNumerator(-result.getNumerator());
+        }
+        return result;
     }
 
 
 
-
-
-
-    /**
-     * ActionListener implementation for handling button clicks in the GUI.
-     */
-    private class ButtonHandler implements ActionListener{
-
-
-        /**
-         * Handles button click events.
-         * @param e The ActionEvent object representing the button click event.
-         */
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object choice = e.getSource();
-
-            // If the exit button is clicked, exit the application
-            if (choice == exitButton){
-                System.exit(0);
-            }
-
-            // If the clear button is clicked, clear the input fields
-            else if (choice == clearButton){
-                clearTextFields();
-            }
-
-            // If the calculate button is clicked, perform either reduction or arithmetic operation
-            else if (choice == calculateButton){
-                errorMessage.setText("");
-                if (isReducePanelShowing){
-                    reduce();
-                } else {
-                    performArithmetic();
-                }
-            } else { // if the choice is either reduceButton or calculatorButton
-                resultTF.setText("");
-                errorMessage.setText("");
-                // Show the appropriate panel based on the button clicked
-                if (choice == reduceButton) {
-                    cardLayout.show(cardPanel, "panel1");
-                    isReducePanelShowing = true;
-                } else if (choice == calculatorButton) {
-                    cardLayout.show(cardPanel, "panel2");
-                    isReducePanelShowing = false;
-                }
-            }
+    @Override
+    public String toString(){
+        if (whole == 0 && getNumerator() == 0){
+            return "" + 0;
+        }
+        else if (whole == 0){
+            return getNumerator() + "/" + getDenominator();
+        } else if (getDenominator() == 1) {
+            return String.valueOf(getWhole());
+        } else if (getDenominator() == 0) {
+            return "undefined"; // for division
+        } else if (whole < 0 && getNumerator() < 0){
+            return whole + " " + -(getNumerator()) + "/" + getDenominator();
         }
 
-
-        /**
-         * Clears the input fields based on the currently displayed panel.
-         */
-        private void clearTextFields() {
-            if (isReducePanelShowing){
-                // Clear the fields for reducing fractions
-                whole.setText("");
-                numerator.setText("");
-                denominator.setText("");
-            } else {
-                // Clear the fields for arithmetic operations
-                whole1.setText("");
-                numerator1.setText("");
-                denominator1.setText("");
-                whole2.setText("");
-                numerator2.setText("");
-                denominator2.setText("");
-            }
-            resultTF.setText("");
-            errorMessage.setText("");
-        }
-
-
-        /**
-         * Reduces the fraction entered by the user and displays the result.
-         */
-        private void reduce() {
-            // Check if numerator or denominator input fields are empty
-            if (numerator.getText().isEmpty() || denominator.getText().isEmpty())
-            {
-                errorMessage.setText("Some values are still missing");
-                return;
-            }
-
-            // Parse the input values
-            int wholeR = parseInteger(whole.getText());
-            int numeratorR = parseInteger(numerator.getText());
-            int denominatorR = parseInteger(denominator.getText());
-
-            if (wholeR == Integer.MAX_VALUE || numeratorR == Integer.MAX_VALUE || denominatorR == Integer.MAX_VALUE){
-                return;
-            }
-
-            // Create a MixedFraction object with the provided values
-            MixedFraction fraction = createMixedFraction(wholeR, numeratorR, denominatorR);
-            if (fraction == null){
-                return; // Don't simplify if the denominator is 0
-            }
-
-            // Simplify the fraction and display the result
-            fraction.simplify();
-            resultTF.setText(fraction.toString());
-        }
+        return whole + " " + getNumerator() + "/" + getDenominator();
+    }
 
 
 
-        /**
-         * Parses a string input into an integer.
-         *
-         * @param input The string input to be parsed.
-         * @return The parsed integer value, or 0 if the input is empty or not a valid integer.
-         */
-        private int parseInteger(String input) {
-            if (input.isEmpty()) {
-                return 0;
-            }
-            try {
-                return Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                errorMessage.setText("Some values are not valid. ");
-                return Integer.MAX_VALUE;
-            }
-        }
+    /**
+     * Converts this mixed fraction to a decimal number.
+     *
+     * @return The decimal representation of this mixed fraction.
+     */
+    @Override
+    public double toDouble(){
+        double decimal = whole + (double) getNumerator() / getDenominator();
+        String decimalString = String.format("%.4f", decimal);
+        return Double.parseDouble(decimalString);
+    }
 
 
-        /**
-         * Creates a MixedFraction object with the provided values.
-         *
-         * @param wholeR       The whole number part of the fraction.
-         * @param numeratorR   The numerator part of the fraction.
-         * @param denominatorR The denominator part of the fraction.
-         * @return The created MixedFraction object, or null if the denominator is 0.
-         */
-        private MixedFraction createMixedFraction(int wholeR, int numeratorR, int denominatorR) {
-            try {
-                return new MixedFraction(wholeR, numeratorR, denominatorR);
-            } catch (ArithmeticException e){
-                // Handle denominator being 0
-                errorMessage.setText("Denominator cannot be 0");
-                resultTF.setText("");
-                return null;
-            }
-        }
-
-
-
-
-        /**
-         * Performs arithmetic operations on fractions and displays the result.
-         * Checks if all required input values for arithmetic operations are provided,
-         * then performs the selected operation and shows the result. Handles cases
-         * where the provided values are invalid or result in division by zero.
-         */
-        private void performArithmetic() {
-            String operationChoice = (String) operation.getSelectedItem();
-
-            // Check if any input fields are empty
-            if (!inputFieldsIsValid()){
-                return;
-            }
-
-            MixedFraction first;
-            MixedFraction second;
-
-            try {
-                // Parse input values for the first fraction
-                first = parseFraction(whole1, numerator1, denominator1);
-                // Parse input values for the second fraction
-                second = parseFraction(whole2, numerator2, denominator2);
-            } catch (NumberFormatException e){
-                errorMessage.setText("Some values are not valid."); // if there are non-integers
-                return;
-            } catch (ArithmeticException e){
-                errorMessage.setText("Denominator cannot be 0."); // if there are non-integers
-                return;
-            }
-
-            // Perform the arithmetic operation
-            MixedFraction result = calculateResult(operationChoice, first, second);
-
-            // Display the result
-            if (!result.toString().contains("/")) {
-                resultTF.setText(result.toString());
-            } else {
-                resultTF.setText(result + "  or  " + result.toDouble());
-            }
-        } // end of method -> performArithmetic
-
-
-
-
-        /**
-         * Parses the input values for a fraction and creates a MixedFraction object.
-         * @param wholeField The JTextField for the whole part of the fraction.
-         * @param numeratorField The JTextField for the numerator of the fraction.
-         * @param denominatorField The JTextField for the denominator of the fraction.
-         * @return The MixedFraction object representing the parsed fraction.
-         * @throws NumberFormatException if any of the input values is not a valid integer.
-         * @throws ArithmeticException if the denominator is 0.
-         */
-        private MixedFraction parseFraction(JTextField wholeField, JTextField numeratorField, JTextField denominatorField) throws ArithmeticException {
-            int whole = wholeField.getText().isEmpty() ? 0 : Integer.parseInt(wholeField.getText());
-            int numerator = Integer.parseInt(numeratorField.getText());
-            int denominator = Integer.parseInt(denominatorField.getText());
-            return new MixedFraction(whole, numerator, denominator);
-        }
-
-        /**
-         * Calculates the result of the arithmetic operation.
-         * @param operationChoice The selected arithmetic operation.
-         * @param first The first fraction.
-         * @param second The second fraction.
-         * @return The result of the arithmetic operation.
-         * @throws ArithmeticException if the operation results in division by zero.
-         */
-        private MixedFraction calculateResult(String operationChoice, MixedFraction first, MixedFraction second) {
-            return switch (operationChoice) {
-                case "+" -> first.add(second);
-                case "-" -> first.subtract(second);
-                case "x" -> first.multiplyBy(second);
-                case "÷" -> first.divideBy(second);
-                default -> new MixedFraction(); // Default to returning zero, but this won't likely happen
-            };
-        }
-
-
-        /**
-         * Checks if all required input fields for performing arithmetic operations are filled.
-         * If any of the input fields is empty, sets an error message and returns false.
-         * Otherwise, returns true indicating that all input fields are filled.
-         *
-         * @return true if all required input fields are filled, false otherwise.
-         */
-        private boolean inputFieldsIsValid() {
-            if (numerator1.getText().isEmpty() || denominator1.getText().isEmpty() ||
-                numerator2.getText().isEmpty() || denominator2.getText().isEmpty())
-            {
-                errorMessage.setText("Some values are still missing");
-                return false;
-            }
-            return true;
-        }
-
-
-    } // end of the inner class -> ButtonHandler
-
-} // end of the outer class -> FractionCalculatorGUI
+} // end of MixedFraction
