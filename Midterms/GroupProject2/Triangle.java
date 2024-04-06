@@ -1,7 +1,9 @@
+package mexer2.prog2.edu.slu;
+
 public class Triangle extends Shape{
-    private double side1;
-    private double side2;
-    private double side3;
+    private final double side1;
+    private final double side2;
+    private final double side3;
 
 
     public Triangle(String name, double side1, double side2, double side3) {
@@ -14,11 +16,15 @@ public class Triangle extends Shape{
     @Override
     public double area() {
         double p = (side1 + side2 + side3) / 2; // half the perimeter
-        return Math.sqrt(p * (p - side1) * (p - side2) * (p - side3));
+        double area = Math.sqrt(p * (p - side1) * (p - side2) * (p - side3));
+        String areaString = String.format("%.5f", area);
+        return Double.parseDouble(areaString);
     }
 
     @Override
     public double perimeter() {
-        return side1 + side2 + side3;
+        double perimeter = side1 + side2 + side3;
+        String perimeterString = String.format("%.5f", perimeter);
+        return Double.parseDouble(perimeterString);
     }
 }
