@@ -1,5 +1,7 @@
+package mexer2.prog2.edu.slu;
+
 public class Rectangle extends Square{
-    private double side2;
+    private final double side2;
     public Rectangle(String name, double side1, double side2) {
         super(name, side1);
         this.side2 = side2;
@@ -7,11 +9,15 @@ public class Rectangle extends Square{
 
     @Override
     public double area() {
-        return side2 * side;
+        double area = side2 * side;
+        String areaString = String.format("%.5f", area);
+        return Double.parseDouble(areaString);
     }
 
     @Override
     public double perimeter() {
-        return 2 * side2 + 2 * side;
+        double perimeter = 2 * side2 + 2 * side;
+        String perimeterString = String.format("%.5f", perimeter);
+        return Double.parseDouble(perimeterString);
     }
 }
