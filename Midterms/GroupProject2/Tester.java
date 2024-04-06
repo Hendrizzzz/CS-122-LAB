@@ -383,6 +383,7 @@ public class Tester extends JFrame {
                     if (isArea){
                         formula.setText("");
                         triangleAnswerJTextfield.setText("");
+                        triangleUnitsLabel.setText("units²");
                     } else {
                         formula.setText("Perimeter : a + b + c");
                         triangleAreaOrPerimeterLabel.setText("Perimeter : ");
@@ -411,12 +412,12 @@ public class Tester extends JFrame {
                     if (isArea){
                         formula.setText("Area : a²");
                         circleAreaOrPerimeterLabel.setText("Area : ");
-                        circleUnitsLabel.setText("units²");
+                        squareUnitsLabel.setText("units²");
                         squareAnswerJTextfield.setText("");
                     } else {
                         formula.setText("Perimeter : 4a");
                         circleAreaOrPerimeterLabel.setText("Perimeter : ");
-                        circleUnitsLabel.setText("units");
+                        squareUnitsLabel.setText("units");
                         squareAnswerJTextfield.setText("");
                     }
                 }
